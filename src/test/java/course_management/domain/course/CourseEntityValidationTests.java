@@ -1,5 +1,6 @@
-package course_management.domain;
+package course_management.domain.course;
 
+import course_management.domain.CourseEntity;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -12,7 +13,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class CourseEntityValidationTest {
+public class CourseEntityValidationTests {
 
     private Validator validator;
 

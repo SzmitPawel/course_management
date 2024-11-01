@@ -9,25 +9,28 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name = "COURSE")
 @Getter
 @Setter
 public class CourseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "COURSE_ID")
+    @Column(name = "course_id")
     @Setter(AccessLevel.NONE)
     private Long id;
 
     @NotNull(message = "Invalid title: Title is NULL.")
     @Size(min = 2, max = 20, message = "Title must be between 2 and 20 characters.")
-    @Column(name = "TITLE")
+    @Column(name = "title")
     private String title;
 
     @Size(min = 2, max = 255, message = "Description must be between 2 and 255.")
-    @Column(name = "DESCRIPTION")
+    @Column(name = "description")
     private String description;
 
     @NotNull(message = "Invalid seat limit: Seat limit is NUll.")
@@ -35,8 +38,14 @@ public class CourseEntity {
     @Max(value = 10000, message = "Seat cannot be above 10000.")
     private int seatLimit;
 
-
-    //private List<Registration> registrationList = null;
+    @OneToMany(
+            targetEntity = RegistrationEntity.class,
+            mappedBy = "course",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true
+    )
+    private List<RegistrationEntity> registrationList = null;
 
 
     public CourseEntity() {
@@ -46,6 +55,22 @@ public class CourseEntity {
         this.title = title;
         this.description = description;
         this.seatLimit = seatLimit;
+    }
+
+    public void addRegistration(RegistrationEntity registrationEntity) {
+        if (registrationList == null) {
+            registrationList = new ArrayList<>();
+        }
+
+        registrationList.add(registrationEntity);
+        registrationEntity.setCourse(this);
+    }
+
+    public void removeRegistration(RegistrationEntity registrationEntity) {
+        if (registrationList != null) {
+            registrationList.remove(registrationEntity);
+            registrationEntity.setCourse(null);
+        }
     }
 
     @Override
